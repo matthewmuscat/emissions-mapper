@@ -11,7 +11,7 @@ plugins:
 custom:
   serverless-offline:
     port: 4000
-  config: ${file(.secrets.yml)}
+  # config: ${file(.secrets.yml)}
 
 functions:
   hello:
@@ -19,5 +19,12 @@ functions:
     events:
       - http:
           path: sayHello/{name}
+          method: get
+          cors: true
+  bye: 
+    handler: handler.bye
+    events:
+      - http:
+          path: sayBye/{name}
           method: get
           cors: true
