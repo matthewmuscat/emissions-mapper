@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "knex": "^0.18.0",
-    "knex-csv-seeder": "^0.4.1",
     "pg": "^7.11.0",
     "serverless-offline": "^5.5.0",
     "uuid": "^3.3.2"
