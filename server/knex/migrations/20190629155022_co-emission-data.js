@@ -4,13 +4,11 @@ exports.up = knex => {
     return knex.schema.hasTable('coData').then(exists => {
         if (!exists) {
             return knex.schema.createTable('coData', table => {
-                table.uuid('id').primary().defaultTo(uuid());
+                table.increments('id').primary();
                 table.string('entity').notNullable();
-                table.string('code').notNullable();
+                table.string('code');
                 table.integer('year').notNullable();
-                table.integer('emissions').notNullable();
-                table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now())
-                table.timestamp('updatedAt').notNullable().defaultTo(knex.fn.now())
+                table.float('emissions');
             });
         }
     });
