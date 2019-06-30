@@ -27,21 +27,15 @@ class WorldMap extends Component {
     super(props);
     this.state = {
       data: [],
-      range: {},
-      year: 2015
+      year: 2016
     }
   }
 
   async componentWillMount() {
-    // const SERVER_URL='http://localhost:4000'
     const SERVER_URL='https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev'
     const { year } = this.state;
-
     const emissionData = await Api(`${SERVER_URL}/getEmissions/${year}`, 'GET');
-    console.log(emissionData.body);
-
     const rangeData = await Api(`${SERVER_URL}/getRange/${year}`, 'GET');
-    console.log(rangeData.body);
 
     this.setState({
       data: emissionData.body,
@@ -49,36 +43,52 @@ class WorldMap extends Component {
     })
   }
 
-  calculateEmissions = async (country) => {
+  calculateEmissions = (country) => {
     const { data } = this.state;
     const countryData = data.find(entry => entry.entity === country);
-    const emissionCount = countryData && countryData.emissions;
+    const emissionCount = countryData && countryData.emissions || 0;
     return emissionCount;
   }
 
-  renderHeatmap = async (country) => {
+  renderHeatmap = (country) => {
     const { year, range, data} = this.state; 
 
-    const emissionCount = data.length && await this.calculateEmissions(country);
-    console.log(emissionCount);
+    const emissionCount = data.length && this.calculateEmissions(country);
+    const max = range.max;
+    const min = range.min;
+
+    if(emissionCount === max) console.log('found country: ', country);
     
+    const maxShorten = emissionCount/max * 100;
 
-    // var clr = d3.scaleLinear()
-    // .range(["green", "red"])
-    // .domain([0, 5]);
+    const red = 'rgb(255, 0, 0)';
+    const yellow = 'rgb(255, 255, 0)';
+    const green = 'rgb(0, 255, 0)';
+    const grey = 'rgb(66, 66, 66)';
 
-    // let colourArray = d3.range(5).map(function(d) {
-    //   return clr(d)  
-    // })
+    console.log('maxShorten is: ', maxShorten);
 
-    // const finalColour = colourArray[Math.floor(Math.random()*colourArray.length)];
-
-    // // console.log(`setting country ${country} to ${finalColour}`)
-    // return finalColour;
-
-
-    // const emissionData = data;
-    // console.log(emissionData);
+    if(maxShorten < 15) {
+      return green
+    } else if (maxShorten < 30) {
+      return yellow;
+    } else if( maxShorten > 30) {
+      return red;
+    } else {
+      return grey;
+    }
+    
+    // switch (maxShorten) {
+    //   case (maxShorten < 15) : {
+        
+    //   }
+    //   case (maxShorten < 15 && maxShorten > 1) : 
+    //     return yellow;
+    //   case (maxShorten < 50 && maxShorten > 15) :
+    //     return red;
+    //   default:
+    //     return grey;
+    // }
   }
   
   updateYear = (event, value) => {
@@ -89,6 +99,8 @@ class WorldMap extends Component {
       const { classes } = this.props;
       const { data } = this.state;
         console.log('data.length: ', data.length);
+        // console.log(this.renderHeatmap("Australia"));
+        
       return (
         <div className={classes.root}>
           {
