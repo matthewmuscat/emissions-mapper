@@ -11,6 +11,7 @@ export default (
             return request.get(url)
                 .then(res => resolve(res))
                 .catch((err) => {
+                    console.log('err: ', err);
                     reject(new Error('CustomApi GET | error found: ', err));
                 });
         }
@@ -42,7 +43,7 @@ export default (
         }
 
         default:
-            return null;
+            return reject(new Error('no url or method specified'));
         }
     }
     return reject(new Error('no url or method specified'));

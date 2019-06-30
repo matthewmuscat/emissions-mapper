@@ -3,30 +3,87 @@ import { withStyles } from '@material-ui/styles';
 import { ComposableMap, ZoomableGroup, Geographies,Geography,
 } from "react-simple-maps"
 import { scaleLinear } from "d3-scale"
+
 import * as d3 from "d3";
+
+// Import Components
+import SliderComponent from '../components/SliderComponent'
+
+// Import Modules
+import Api from '../../modules/api';
 
 const styles = {
   root: {
     display: 'flex',
     margin: 'auto',
     width: 1000,
-    marginTop: '170px'
+    marginTop: '170px',
+    flexDirection: 'column',
   }
 };
 
 class WorldMap extends Component {
-  getRandomColour = (length) => {
-    var clr = d3.scaleLinear()
-    .range(["white", "black"])
-    .domain([0, length]);
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      range: {},
+      year: 2016
+    }
+  }
 
-    let colourArray = d3.range(length).map(function(d) {
-      return clr(d)  
+  async componentWillMount() {
+    const SERVER_URL='https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev'
+    const { year } = this.state;
+    const emissionData = await Api(`${SERVER_URL}/getEmissions/${year}`, 'GET');
+    const rangeData = await Api(`${SERVER_URL}/getRange/${year}`, 'GET');
+
+    console.log(`${SERVER_URL}/getRange/${year}`);
+    console.log(rangeData);
+
+    this.setState({
+      data: emissionData,
+      range: rangeData
     })
+  }
 
-    return colourArray[Math.floor(Math.random()*colourArray.length)];
+  calculateEmissions = async (country) => {
+    const { data } = this.state;
+    const countryData = data.body.find(entry => entry.entity === country);
+    const emissionCount = countryData && countryData.emissions;
+    return emissionCount;
+  }
+
+  renderHeatmap = async (country) => {
+    const { year, range } = this.state; 
+  
+    // const emissionCount = await this.calculateEmissions(country);
+    
+    // console.log(range);
+    
+
+    // var clr = d3.scaleLinear()
+    // .range(["green", "red"])
+    // .domain([0, 5]);
+
+    // let colourArray = d3.range(5).map(function(d) {
+    //   return clr(d)  
+    // })
+
+    // const finalColour = colourArray[Math.floor(Math.random()*colourArray.length)];
+
+    // // console.log(`setting country ${country} to ${finalColour}`)
+    // return finalColour;
+
+
+    // const emissionData = data;
+    // console.log(emissionData);
   }
   
+  updateYear = (event, value) => {
+    this.setState({ year: value })
+  }
+
   render() {
       const { classes } = this.props;
       return (
@@ -46,7 +103,6 @@ class WorldMap extends Component {
             <ZoomableGroup center={[0,20]}>
               <Geographies geography={ "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/examples/choropleth-map/static/world-50m-with-population.json" }>
                 {(geographies, projection) => geographies.map((geography, i) => (
-                  console.log(geography.properties.name),
                   <Geography
                     key={ i }
                     geography={ geography }
@@ -56,7 +112,7 @@ class WorldMap extends Component {
                         stroke: '#000',
                         strokeWidth: 0.5,
                         outline: "none",
-                        fill: this.getRandomColour(geographies.length)
+                        fill: this.renderHeatmap(geography.properties.name)
                       },
                       hover: {
                         fill: "#263238",
@@ -73,10 +129,11 @@ class WorldMap extends Component {
                     }}
                   />
                 ))}
-            </Geographies>
-          </ZoomableGroup>
-        </ComposableMap>
-      </div>
+              </Geographies>
+            </ZoomableGroup>
+          </ComposableMap>
+          <SliderComponent onChange={this.updateYear}/>
+        </div>
       );
   }
 }
