@@ -1,9 +1,16 @@
-service: aws-nodejs # NOTE: update this with your service name
+service: emissions # NOTE: update this with your service name
 
 provider:
   name: aws
   runtime: nodejs8.10
   region: ap-southeast-2
+  profile: emissions
+  environment: 
+    PGHOST: ${self:custom.config.PGHOST}
+    PGPORT: ${self:custom.config.PGPORT}
+    PGDATABASE: ${self:custom.config.PGDATABASE}
+    PGUSER: ${self:custom.config.PGUSER}
+    PGPASSWORD: ${self:custom.config.PGPASSWORD}
 
 plugins:
   - serverless-offline
@@ -11,20 +18,13 @@ plugins:
 custom:
   serverless-offline:
     port: 4000
-  # config: ${file(.secrets.yml)}
+  config: ${file(.secrets.yml)}
 
 functions:
-  hello:
-    handler: handler.hello
+  getEmissionsByYear:
+    handler: handler.getEmissionsByYear
     events:
       - http:
-          path: sayHello/{name}
-          method: get
-          cors: true
-  bye: 
-    handler: handler.bye
-    events:
-      - http:
-          path: sayBye/{name}
+          path: getEmissions/{year}
           method: get
           cors: true

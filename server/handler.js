@@ -1,26 +1,29 @@
-'use strict';
+const knex = require('knex');
+const postgres = require('./postgres');
 
-const hello = async (event, context) => {
-  const { name } = event.pathParameters
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: `Hello ${name}`,
-    }),
-  };
-};
+const getEmissionsByYear = async (event, context) => {
+  try {
+    const { year } = event.pathParameters
 
-const bye = async (event, context) => {
-  const { name } = event.pathParameters
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: `Hello ${name}`,
-    }),
-  };
+    const db = await postgres();
+    const emissionData = await db('coData')
+        .select('entity', 'code', 'year', 'emissions')
+        .where({ year: parseInt(year) });
+
+    return {
+        statusCode: 200,
+        body: JSON.stringify(emissionData),
+    };
+    } catch (err) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({
+                message: err.message,
+            }),
+        };
+    }
 };
 
 module.exports = {
-  hello,
-  bye
+    getEmissionsByYear,
 }
