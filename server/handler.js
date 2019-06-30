@@ -1,4 +1,3 @@
-const knex = require('knex');
 const postgres = require('./postgres');
 
 const getEmissionsByYear = async (event, context) => {
