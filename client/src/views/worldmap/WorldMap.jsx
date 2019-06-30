@@ -36,28 +36,32 @@ class WorldMap extends Component {
     const SERVER_URL='https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev'
     const { year } = this.state;
     const emissionData = await Api(`${SERVER_URL}/getEmissions/${year}`, 'GET');
-    const rangeData = await Api(`${SERVER_URL}/getRange/${year}`, 'GET');
-
-    console.log(`${SERVER_URL}/getRange/${year}`);
-    console.log(rangeData);
+    console.log(emissionData);
+    // const rangeData = await Api(`${SERVER_URL}/getRange/${year}`, 'GET');
+    // console.log(`${SERVER_URL}/getRange/${year}`);
+    // console.log(rangeData);
 
     this.setState({
-      data: emissionData,
-      range: rangeData
+      data: emissionData.body,
+      // range: rangeData
     })
   }
 
   calculateEmissions = async (country) => {
     const { data } = this.state;
-    const countryData = data.body.find(entry => entry.entity === country);
+    console.log(data);
+    const countryData = data.find(entry => entry.entity === country);
+    // console.log(countryData);
     const emissionCount = countryData && countryData.emissions;
+    // console.log(emissionCount);
     return emissionCount;
   }
 
   renderHeatmap = async (country) => {
-    const { year, range } = this.state; 
-  
-    // const emissionCount = await this.calculateEmissions(country);
+    const { year, range, data} = this.state; 
+
+    const emissionCount = data && await this.calculateEmissions(country);
+    // console.log(emissionCount);
     
     // console.log(range);
     
