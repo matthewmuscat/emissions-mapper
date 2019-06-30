@@ -51,7 +51,6 @@ class WorldMap extends Component {
                     key={ i }
                     geography={ geography }
                     projection={ projection }
-                    onClick={ this.handleClick }
                     style={{
                       default: {
                         stroke: '#000',
