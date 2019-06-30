@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import './App.css';
 
 // Import Views:
-import Probabilities from './views/probabilities/index.jsx';
+import WorldMap from './views/worldmap/WorldMap';
+import SliderComponent from './views/components/SliderComponent'
 
 class App extends Component {
   render() {
       return (
           <div>
-            <Probabilities />
+            <WorldMap/>
+            <SliderComponent/>
           </div>
       );
   }
