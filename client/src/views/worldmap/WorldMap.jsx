@@ -27,19 +27,18 @@ class WorldMap extends Component {
     super(props);
     this.state = {
       data: [],
-      year: 2016
+      year: 2016,
+      serverUrl: 'https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev',
+      chartUrl: "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/examples/choropleth-map/static/world-50m-with-population.json"
     }
   }
 
   async componentWillMount() {
-    const SERVER_URL='https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev'
-    const { year } = this.state;
-    // const emissionData = await Api(`${SERVER_URL}/getEmissions/${year}`, 'GET');
-    const rangeData = await Api(`${SERVER_URL}/getRange/${year}`, 'GET');
+    const { year, serverUrl } = this.state;
+    const rangeData = await Api(`${serverUrl}/getRange/${year}`, 'GET');
 
     await this.getEmissions();
     this.setState({
-      // data: emissionData.body,
       range: rangeData.body[0]
     })
   }
@@ -52,17 +51,14 @@ class WorldMap extends Component {
   }
 
   getEmissions = async () => {
-    const SERVER_URL='https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev'
-    const { year, data } = this.state;
-    const emissionData = await Api(`${SERVER_URL}/getEmissions/${year}`, 'GET');
-
-    console.log('updating data: ', emissionData.body[0])
+    const { year, serverUrl } = this.state;
+    const emissionData = await Api(`${serverUrl}/getEmissions/${year}`, 'GET');
     this.setState({ data: emissionData.body })
   }
 
   renderHeatmap = (country) => {
-    const { year, range, data} = this.state; 
-    const { max, min } = range;
+    const { range, data} = this.state; 
+    const { max } = range;
 
     const emissionCount = data.length && this.calculateEmissions(country);
     const maxShorten = emissionCount/max * 100;
@@ -84,72 +80,79 @@ class WorldMap extends Component {
   }
   
   updateYear = async (event, value) => {
-    await this.getEmissions();
     this.setState({ year: value })
+    await this.getEmissions();
+  }
+
+  renderChart = () => {
+      const { chartUrl } = this.state;
+      const chart = (
+        <Geographies geography={chartUrl}>
+        {(geographies, projection) => geographies.map((geography, i) => {
+            const geo = (
+                <Geography
+                    key={ i }
+                    geography={ geography }
+                    projection={ projection }
+                    style={{
+                    default: {
+                        stroke: '#000',
+                        strokeWidth: 0.5,
+                        outline: "none",
+                        fill: this.renderHeatmap(geography.properties.name)
+                    },
+                    hover: {
+                        fill: "#263238",
+                        stroke: "#fff",
+                        strokeWidth: 1.5,
+                        outline: "none",
+                    },
+                    pressed: {
+                        fill: "#263238",
+                        stroke: "#607D8B",
+                        strokeWidth: 0.75,
+                        outline: "none",
+                    }
+                    }}
+                />
+            )
+            return geo;
+        }
+        )}
+        </Geographies>
+      )
+
+      return chart;
   }
 
   render() {
       const { classes } = this.props;
       const { data, year } = this.state;
+
       console.log('year: ', year);
 
-      console.log('im gonna re-render');
       return (
         <div className={classes.root}>
           {
             data.length && (
-              <ComposableMap
-                projectionConfig={{
-                  scale: 205,
-                  rotation: [-11,0,0],
-                }}
-                width={980}
-                height={551}
-                style={{
-                  width: "100%",
-                  height: "auto",
-                }}
-              >
-              <ZoomableGroup center={[0,20]}>
-                <Geographies geography={ "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/examples/choropleth-map/static/world-50m-with-population.json" }>
-                  {(geographies, projection) => geographies.map((geography, i) => {
-                      console.log('found data');
-                      return (
-                        <Geography
-                            key={ i }
-                            geography={ geography }
-                            projection={ projection }
-                            style={{
-                            default: {
-                                stroke: '#000',
-                                strokeWidth: 0.5,
-                                outline: "none",
-                                fill: this.renderHeatmap(geography.properties.name)
-                            },
-                            hover: {
-                                fill: "#263238",
-                                stroke: "#fff",
-                                strokeWidth: 1.5,
-                                outline: "none",
-                            },
-                            pressed: {
-                                fill: "#263238",
-                                stroke: "#607D8B",
-                                strokeWidth: 0.75,
-                                outline: "none",
-                            }
-                            }}
-                        />
-                      )
-                    }
-                  )}
-                </Geographies>
-              </ZoomableGroup>
-            </ComposableMap>
+                <ComposableMap
+                    projectionConfig={{
+                        scale: 205,
+                        rotation: [-11,0,0],
+                    }}
+                    width={980}
+                    height={551}
+                    style={{
+                        width: "100%",
+                        height: "auto",
+                    }}
+                >
+                    {this.renderChart()}
+                </ComposableMap>
             )
           }
           
-          <SliderComponent onChange={this.updateYear}/>
+          <SliderComponent year={year} onChange={this.updateYear}/>
         </div>
       );
   }
