@@ -33,6 +33,7 @@ class WorldMap extends Component {
   }
 
   async componentWillMount() {
+    // const SERVER_URL='http://localhost:4000'
     const SERVER_URL='https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev'
     const { year } = this.state;
 
@@ -59,7 +60,7 @@ class WorldMap extends Component {
     const { year, range, data} = this.state; 
 
     const emissionCount = data.length && await this.calculateEmissions(country);
-    // console.log(emissionCount);
+    console.log(emissionCount);
     
 
     // var clr = d3.scaleLinear()
@@ -86,52 +87,59 @@ class WorldMap extends Component {
 
   render() {
       const { classes } = this.props;
+      const { data } = this.state;
+        console.log('data.length: ', data.length);
       return (
         <div className={classes.root}>
-          <ComposableMap
-            projectionConfig={{
-              scale: 205,
-              rotation: [-11,0,0],
-            }}
-            width={980}
-            height={551}
-            style={{
-              width: "100%",
-              height: "auto",
-            }}
-            >
-            <ZoomableGroup center={[0,20]}>
-              <Geographies geography={ "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/examples/choropleth-map/static/world-50m-with-population.json" }>
-                {(geographies, projection) => geographies.map((geography, i) => (
-                  <Geography
-                    key={ i }
-                    geography={ geography }
-                    projection={ projection }
-                    style={{
-                      default: {
-                        stroke: '#000',
-                        strokeWidth: 0.5,
-                        outline: "none",
-                        fill: this.renderHeatmap(geography.properties.name)
-                      },
-                      hover: {
-                        fill: "#263238",
-                        stroke: "#fff",
-                        strokeWidth: 1.5,
-                        outline: "none",
-                      },
-                      pressed: {
-                        fill: "#263238",
-                        stroke: "#607D8B",
-                        strokeWidth: 0.75,
-                        outline: "none",
-                      }
-                    }}
-                  />
-                ))}
-              </Geographies>
-            </ZoomableGroup>
-          </ComposableMap>
+          {
+            data.length && (
+              <ComposableMap
+              projectionConfig={{
+                scale: 205,
+                rotation: [-11,0,0],
+              }}
+              width={980}
+              height={551}
+              style={{
+                width: "100%",
+                height: "auto",
+              }}
+              >
+              <ZoomableGroup center={[0,20]}>
+                <Geographies geography={ "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/examples/choropleth-map/static/world-50m-with-population.json" }>
+                  {(geographies, projection) => geographies.map((geography, i) => (
+                    <Geography
+                      key={ i }
+                      geography={ geography }
+                      projection={ projection }
+                      style={{
+                        default: {
+                          stroke: '#000',
+                          strokeWidth: 0.5,
+                          outline: "none",
+                          fill: this.renderHeatmap(geography.properties.name)
+                        },
+                        hover: {
+                          fill: "#263238",
+                          stroke: "#fff",
+                          strokeWidth: 1.5,
+                          outline: "none",
+                        },
+                        pressed: {
+                          fill: "#263238",
+                          stroke: "#607D8B",
+                          strokeWidth: 0.75,
+                          outline: "none",
+                        }
+                      }}
+                    />
+                  ))}
+                </Geographies>
+              </ZoomableGroup>
+            </ComposableMap>
+            )
+          }
+          
           <SliderComponent onChange={this.updateYear}/>
         </div>
       );

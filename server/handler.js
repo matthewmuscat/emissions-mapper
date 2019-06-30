@@ -35,9 +35,9 @@ const getRangeByYear = async (event, context, callback) => {
             .min('emissions')
             .where({ year: parseInt(year) })
             .whereNot({ emissions: 0 })
-            .first();
+            // .first();
 
-        console.log('found range: ', rangeInfo);
+        console.log('found range: ', typeof(rangeInfo));
 
         await db.destroy();
         return {

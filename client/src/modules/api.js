@@ -9,6 +9,7 @@ export default (
         switch (method.toLowerCase()) {
         case 'get': {
             return request.get(url)
+                .set('content-type', '*')
                 .then(res => resolve(res))
                 .catch((err) => {
                     console.log('err: ', err);
