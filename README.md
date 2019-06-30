@@ -1,7 +1,3 @@
 # Emissions Mapper
 
-### endpoints:
-  ```
-  GET - https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev/getEmissions/{year}
-  GET - https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev/getRange/{year}
-  ```
+A mapper that visualises emitted pollution on a global scale. This project utilises a React-based front-end, alongside the back-end utilising a RESTful API hosted on a Serverless Instance. This project was collaboratively developed - including Lachlan Young, Angus Philippini, Brian Riwu Kaho, and myself as part of a weekend Hackathon. 
