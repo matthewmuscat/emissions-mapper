@@ -45,7 +45,7 @@ class WorldMap extends Component {
 
     this.setState({
       data: emissionData.body,
-      range: rangeData.body
+      range: rangeData.body[0]
     })
   }
 
