@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/styles';
-import { ComposableMap, ZoomableGroup, Geographies,Geography,
+import {
+  ComposableMap, ZoomableGroup, Geographies, Geography,
 } from "react-simple-maps"
-import { scaleLinear } from "d3-scale"
-
-import * as d3 from "d3";
 
 // Import Components
 import SliderComponent from '../components/SliderComponent'
@@ -57,28 +55,28 @@ class WorldMap extends Component {
   }
 
   renderHeatmap = (country) => {
-    const { range, data} = this.state; 
+    const { range, data } = this.state;
     const { max } = range;
 
     const emissionCount = data.length && this.calculateEmissions(country);
-    const maxShorten = emissionCount/max * 100;
+    const maxShorten = emissionCount / max * 100;
 
     const red = 'rgb(255, 0, 0)';
     const yellow = 'rgb(255, 255, 0)';
     const green = 'rgb(0, 255, 0)';
     const grey = 'rgb(66, 66, 66)';
 
-    if(maxShorten < 15) {
-        return green
+    if (maxShorten < 15) {
+      return green
     } else if (maxShorten < 30) {
-        return yellow;
-    } else if( maxShorten > 30) {
-        return red;
+      return yellow;
+    } else if (maxShorten > 30) {
+      return red;
     } else {
-        return grey;
+      return grey;
     }
   }
-  
+
   updateYear = async (event, value) => {
     this.setState({ year: value })
     await this.getEmissions();
@@ -126,35 +124,68 @@ class WorldMap extends Component {
   }
 
   render() {
-      const { classes } = this.props;
-      const { data, year } = this.state;
+    const { classes } = this.props;
+    const { data, year } = this.state;
+    console.log('year: ', year);
 
-      console.log('year: ', year);
+    return (
+      <div className={classes.root}>
+        {
+          data.length && (
+            <ComposableMap
+              projectionConfig={{
+                scale: 205,
+                rotation: [-11, 0, 0],
+              }}
+              width={980}
+              height={551}
+              style={{
+                width: "100%",
+                height: "auto",
+              }}
+            >
+              <ZoomableGroup center={[0, 20]}>
+                <Geographies geography={"https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/examples/choropleth-map/static/world-50m-with-population.json"}>
+                  {(geographies, projection) => geographies.map((geography, i) => {
+                    console.log('found data');
+                    return (
+                      <Geography
+                        key={i}
+                        geography={geography}
+                        projection={projection}
+                        style={{
+                          default: {
+                            stroke: '#000',
+                            strokeWidth: 0.5,
+                            outline: "none",
+                            fill: this.renderHeatmap(geography.properties.name)
+                          },
+                          hover: {
+                            fill: "#263238",
+                            stroke: "#fff",
+                            strokeWidth: 1.5,
+                            outline: "none",
+                          },
+                          pressed: {
+                            fill: "#263238",
+                            stroke: "#607D8B",
+                            strokeWidth: 0.75,
+                            outline: "none",
+                          }
+                        }}
+                      />
+                    )
+                  }
+                  )}
+                </Geographies>
+              </ZoomableGroup>
+            </ComposableMap>
+          )
+        }
 
-      return (
-        <div className={classes.root}>
-          {
-            data.length && (
-                <ComposableMap
-                    projectionConfig={{
-                        scale: 205,
-                        rotation: [-11,0,0],
-                    }}
-                    width={980}
-                    height={551}
-                    style={{
-                        width: "100%",
-                        height: "auto",
-                    }}
-                >
-                    {this.renderChart()}
-                </ComposableMap>
-            )
-          }
-          
-          <SliderComponent year={year} onChange={this.updateYear}/>
-        </div>
-      );
+        <SliderComponent onChange={this.updateYear} />
+      </div>
+    );
   }
 }
 

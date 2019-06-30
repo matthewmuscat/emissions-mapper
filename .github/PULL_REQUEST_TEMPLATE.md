@@ -1,6 +1,6 @@
 ## Title
 
-Fixes [ISSUE-001](https://github.com/builtbyproxy/poker-probabilities/issues/001)
+Fixes [ISSUE-001](https://github.com/builtbyproxy/emissions-mapper/issues/001)
 
 ## Details
 (If it's a complex change, explain it)
