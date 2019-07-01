@@ -25,7 +25,8 @@ class WorldMap extends Component {
     super(props);
     this.state = {
       data: [],
-      year: 2016
+      year: 2016,
+      map_url: "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/examples/choropleth-map/static/world-50m-with-population.json"
     }
   }
 
@@ -88,7 +89,7 @@ class WorldMap extends Component {
 
   render() {
     const { classes } = this.props;
-    const { data, year } = this.state;
+    const { data, year, map_url } = this.state;
     console.log('year: ', year);
 
     return (
@@ -108,7 +109,7 @@ class WorldMap extends Component {
               }}
             >
               <ZoomableGroup center={[0, 20]}>
-                <Geographies geography={"https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/examples/choropleth-map/static/world-50m-with-population.json"}>
+                <Geographies geography={map_url}>
                   {(geographies, projection) => geographies.map((geography, i) => {
                     console.log('found data');
                     return (
