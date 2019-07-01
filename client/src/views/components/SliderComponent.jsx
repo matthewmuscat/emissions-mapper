@@ -22,14 +22,13 @@ class SliderComponent extends Component {
 
   render() {
     const { classes, onChange } = this.props;
-
     return (
       <div className={classes.slider} >
         <Slider 
           aria-label="Slider" 
           defaultValue={2016} 
           max={2016}
-          min={1750}
+          min={1751}
           onChange={onChange}
           valueLabelDisplay="on" />
       </div>

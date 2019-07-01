@@ -26,19 +26,17 @@ class WorldMap extends Component {
     this.state = {
       data: [],
       year: 2016,
-      map_url: "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/examples/choropleth-map/static/world-50m-with-population.json"
+      serverUrl: 'https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev',
+      chartUrl: "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/examples/choropleth-map/static/world-50m-with-population.json"
     }
   }
 
   async componentWillMount() {
-    const SERVER_URL = 'https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev'
-    const { year } = this.state;
-    // const emissionData = await Api(`${SERVER_URL}/getEmissions/${year}`, 'GET');
-    const rangeData = await Api(`${SERVER_URL}/getRange/${year}`, 'GET');
+    const { year, serverUrl } = this.state;
+    const rangeData = await Api(`${serverUrl}/getRange/${year}`, 'GET');
 
     await this.getEmissions();
     this.setState({
-      // data: emissionData.body,
       range: rangeData.body[0]
     })
   }
@@ -51,11 +49,8 @@ class WorldMap extends Component {
   }
 
   getEmissions = async () => {
-    const SERVER_URL = 'https://9fwwprofzl.execute-api.ap-southeast-2.amazonaws.com/dev'
-    const { year } = this.state;
-    const emissionData = await Api(`${SERVER_URL}/getEmissions/${year}`, 'GET');
-
-    console.log('updating data: ', emissionData.body[0])
+    const { year, serverUrl } = this.state;
+    const emissionData = await Api(`${serverUrl}/getEmissions/${year}`, 'GET');
     this.setState({ data: emissionData.body })
   }
 
@@ -83,8 +78,8 @@ class WorldMap extends Component {
   }
 
   updateYear = async (event, value) => {
-    await this.getEmissions();
     this.setState({ year: value })
+    await this.getEmissions();
   }
 
   render() {
