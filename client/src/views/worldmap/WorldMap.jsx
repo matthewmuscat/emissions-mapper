@@ -84,7 +84,7 @@ class WorldMap extends Component {
 
   render() {
     const { classes } = this.props;
-    const { data, year, map_url } = this.state;
+    const { data, year, chartUrl } = this.state;
     console.log('year: ', year);
 
     return (
@@ -104,7 +104,7 @@ class WorldMap extends Component {
               }}
             >
               <ZoomableGroup center={[0, 20]}>
-                <Geographies geography={map_url}>
+                <Geographies geography={chartUrl}>
                   {(geographies, projection) => geographies.map((geography, i) => {
                     console.log('found data');
                     return (
