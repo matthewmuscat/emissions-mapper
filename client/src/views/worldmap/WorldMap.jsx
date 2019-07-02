@@ -85,7 +85,6 @@ class WorldMap extends Component {
   render() {
     const { classes } = this.props;
     const { data, year, chartUrl } = this.state;
-    console.log('year: ', year);
 
     return (
       <div className={classes.root}>

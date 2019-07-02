@@ -12,7 +12,6 @@ export default (
                 .set('content-type', '*')
                 .then(res => resolve(res))
                 .catch((err) => {
-                    console.log('err: ', err);
                     reject(new Error('CustomApi GET | error found: ', err));
                 });
         }
