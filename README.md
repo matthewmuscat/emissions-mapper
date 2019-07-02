@@ -5,8 +5,9 @@ A mapper that visualises emitted pollution on a global scale. This project utili
 # Installation
 
 1. `git clone https://github.com/matthewmuscat/emissions-mapper.git`
-2. `cd client && npm i`
-3. `cd ..`
-4. `cd server && npm i`
-5. `cd ..`
-6. `cd client && npm start`
+2. `cd emissions-mapper`
+3. `cd client && npm i`
+4. `cd ..`
+5. `cd server && npm i`
+6. `cd ..`
+7. `cd client && npm start`
