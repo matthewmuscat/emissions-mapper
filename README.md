@@ -11,3 +11,7 @@ A mapper that visualises emitted pollution on a global scale. This project utili
 5. `cd server && npm i`
 6. `cd ..`
 7. `cd client && npm start`
+
+# Preview
+
+[Emissions Mapper](https://serene-shockley-3e8f54.netlify.com/)
