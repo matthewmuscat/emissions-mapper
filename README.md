@@ -13,5 +13,7 @@ A mapper that visualises emitted pollution on a global scale. This project utili
 7. `cd client && npm start`
 
 # Preview
-* The preview requires that CORS is disabled. This can be done with a Chrome addon.
+
+**The preview requires that CORS is disabled. This can be done with a Chrome addon.**
+
 [Emissions Mapper](https://serene-shockley-3e8f54.netlify.com/)
