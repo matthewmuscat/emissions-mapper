@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withStyles } from '@material-ui/styles';
-import Slider from "@material-ui/lab/Slider";
+import Slider from "@material-ui/core/Slider";
 
 const styles = {
   slider: {
