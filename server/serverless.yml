@@ -28,6 +28,7 @@ functions:
           path: getEmissions/{year}
           method: get
           cors: true
+          
   getRangeByYear:
     handler: handler.getRangeByYear
     events:
